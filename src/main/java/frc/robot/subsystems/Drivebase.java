@@ -43,6 +43,8 @@ public class Drivebase extends SubsystemBase {
     leftSlave1 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave1Spark_ID, MotorType.kBrushless);
     leftSlave2 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave2Spark_ID, MotorType.kBrushless);
 
+    rightMaster.setSmartCurrentLimit(40);
+
     rightMotors = new SpeedControllerGroup(rightMaster, rightSlave1, rightSlave2);
     leftMotors = new SpeedControllerGroup(leftMaster, leftSlave1, leftSlave2);
 
