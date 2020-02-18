@@ -30,7 +30,9 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
   private final Drive_Manual driveManual = new Drive_Manual(drivebase);
 
-  private X
+  public static frc.robot.XboxController pilot = new frc.robot.XboxController();
+
+  defualtCommand
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.

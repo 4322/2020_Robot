@@ -66,7 +66,7 @@ public class Drivebase extends SubsystemBase {
 
   }
 
-  private void curvatureDrive(double power, double turn, boolean quickTurn)
+  public void curvatureDrive(double power, double turn, boolean quickTurn)
   {
     drive.curvatureDrive(power, turn, quickTurn);
   }
