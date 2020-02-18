@@ -27,6 +27,8 @@ public final class Constants {
         public static final int leftSlave1Spark_ID = 5;
         public static final int leftSlave2Spark_ID = 6;
 
+        public static final int SparkMax_CurrentLimit = 40;
+
 
 
     }
