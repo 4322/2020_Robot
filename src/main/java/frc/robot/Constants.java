@@ -27,7 +27,7 @@ public final class Constants {
         public static final int leftSlave1Spark_ID = 10;
         public static final int leftSlave2Spark_ID = 11;
 
-        public static final int SparkMax_CurrentLimit = 80;
+        public static final int SparkMax_CurrentLimit = 60;
 
         public static final int positionConversionFactor = 10;  //NEED TO SET FOR REALS
 

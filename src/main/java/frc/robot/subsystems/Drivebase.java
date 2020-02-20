@@ -51,17 +51,17 @@ public class Drivebase extends SubsystemBase {
     rightSlave1 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave1Spark_ID, MotorType.kBrushless);
     rightSlave2 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave2Spark_ID, MotorType.kBrushless);
 
-    rightMaster_encoder = rightMaster.getEncoder(EncoderType.kQuadrature, 4096);
-    rightSlave1_encoder = rightSlave1.getEncoder(EncoderType.kQuadrature, 4096);
-    rightSlave2_encoder = rightSlave2.getEncoder(EncoderType.kQuadrature, 4096);
-
-    leftMaster_encoder = leftMaster.getEncoder(EncoderType.kQuadrature, 4096);
-    leftSlave1_encoder = leftSlave1.getEncoder(EncoderType.kQuadrature, 4096);
-    leftSlave2_encoder = leftSlave2.getEncoder(EncoderType.kQuadrature, 4096);
-
     leftMaster = new CANSparkMax(Constants.Drivebase_Constants.leftMasterSpark_ID, MotorType.kBrushless);
     leftSlave1 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave1Spark_ID, MotorType.kBrushless);
     leftSlave2 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave2Spark_ID, MotorType.kBrushless);
+
+    rightMaster_encoder = rightMaster.getEncoder();
+    rightSlave1_encoder = rightSlave1.getEncoder();
+    rightSlave2_encoder = rightSlave2.getEncoder();
+
+    leftMaster_encoder = leftMaster.getEncoder();
+    leftSlave1_encoder = leftSlave1.getEncoder();
+    leftSlave2_encoder = leftSlave2.getEncoder();
 
     rightMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
     rightSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
@@ -69,7 +69,7 @@ public class Drivebase extends SubsystemBase {
 
     leftMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
     leftSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    leftSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
+    leftSlave2.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
 
     rightMaster.burnFlash();
     rightSlave1.burnFlash();
