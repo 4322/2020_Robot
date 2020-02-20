@@ -14,6 +14,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -24,15 +25,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final Drivebase drivebase = new Drivebase();
+  public final Drivebase drivebase = new Drivebase();
   
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
-  private final Drive_Manual driveManual = new Drive_Manual(drivebase);
+  public final Drive_Manual driveManual = new Drive_Manual(drivebase);
 
   public static frc.robot.XboxController pilot = new frc.robot.XboxController();
 
-  defualtCommand
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -40,6 +40,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    drivebase.setDefaultCommand(driveManual);
   }
 
   /**

@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivebase;
@@ -19,6 +20,7 @@ public class Drive_Manual extends CommandBase {
    private Drivebase drivebase;
    private double power;
    private double turn;
+   private boolean quickTurnState;
 
 
   public Drive_Manual(Drivebase driveSubsystem) {
@@ -38,8 +40,17 @@ public class Drive_Manual extends CommandBase {
 
     power = RobotContainer.pilot.leftStick.getY();
     turn = RobotContainer.pilot.rightStick.getX();
+    quickTurnState = RobotContainer.pilot.lb.get();
 
-    drivebase.curvatureDrive(power, turn, false);
+    SmartDashboard.putNumber("Power Value", power);
+    SmartDashboard.putNumber("Turn Value", turn);
+
+    drivebase.displayAllLeftSideEncoders_Position();
+    drivebase.displayAllLeftSideEncoders_Velocity();
+    drivebase.displayAllRightSideEncoders_Position();
+    drivebase.displayAllRightSideEncoders_Velocity();
+
+    drivebase.curveDrive(power, turn, quickTurnState);
   }
 
   // Called once the command ends or is interrupted.
