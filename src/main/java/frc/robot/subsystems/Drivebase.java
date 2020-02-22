@@ -16,9 +16,12 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 
-public class Drivebase extends SubsystemBase {
+public class Drivebase extends PIDSubsystem {
 
   private CANSparkMax rightMaster;
   private CANSparkMax rightSlave1;
@@ -47,6 +50,8 @@ public class Drivebase extends SubsystemBase {
    */
   public Drivebase() {
 
+    super(new PIDController(Constants.Drivebase_Constants.PID_Values.kP, Constants.Drivebase_Constants.PID_Values.kI, Constants.Drivebase_Constants.PID_Values.kD));
+    
     rightMaster = new CANSparkMax(Constants.Drivebase_Constants.rightMasterSpark_ID, MotorType.kBrushless);
     rightSlave1 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave1Spark_ID, MotorType.kBrushless);
     rightSlave2 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave2Spark_ID, MotorType.kBrushless);
@@ -275,5 +280,17 @@ public class Drivebase extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  @Override
+  protected void useOutput(double output, double setpoint) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  protected double getMeasurement() {
+    // TODO Auto-generated method stub
+    return 0;
   }
 }

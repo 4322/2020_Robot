@@ -31,6 +31,14 @@ public final class Constants {
 
         public static final int positionConversionFactor = 10;  //NEED TO SET FOR REALS
 
+            public static class PID_Values {
+
+                public static final double kP = 0;
+                public static final double kI = 0;
+                public static final double kD = 0;
+
+            }
+
 
 
     }
