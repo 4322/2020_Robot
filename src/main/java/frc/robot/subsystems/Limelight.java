@@ -8,6 +8,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -29,6 +30,7 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    displayValues();
   }
 
   public double getX_Offset()
@@ -57,6 +59,13 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("Y Offset", getY_Offset());
     SmartDashboard.putBoolean("Target Visible", getTarget());
     SmartDashboard.putNumber("Target Area", get_TargetArea());
+  }
+
+  //Formula Referenced From: https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
+  public double getDistance()
+  {
+    double distance = (Constants.Shooter_Constants.targetHeight - Constants.Shooter_Constants.limelightHeight) / (Math.tan(Constants.Shooter_Constants.limelightAngle + getY_Offset()));
+    return distance;
   }
 
 

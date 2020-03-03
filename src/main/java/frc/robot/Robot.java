@@ -60,10 +60,10 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    SmartDashboard.putNumber("X Offset", tx.getDouble(0));
-    SmartDashboard.putNumber("Y Offset", ty.getDouble(0));
+    SmartDashboard.putNumber("X Offset", tx.getDouble(0.0));
+    SmartDashboard.putNumber("Y Offset", ty.getDouble(0.0));
     SmartDashboard.putBoolean("Target Visible", tv.getBoolean(false));
-    SmartDashboard.putNumber("Target Area", ta.getDouble(0));
+    SmartDashboard.putNumber("Target Area", ta.getDouble(0.0));
     
     
   }
