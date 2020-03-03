@@ -31,13 +31,13 @@ public final class Constants {
 
         public static final int positionConversionFactor = 10;  //NEED TO SET FOR REALS
 
-            public static class PID_Values {
+        public static class PID_Values {
 
-                public static final double kP = 0;
-                public static final double kI = 0;
-                public static final double kD = 0;
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
 
-            }
+        }
     }
 
     public static class Shooter_Constants
@@ -45,5 +45,14 @@ public final class Constants {
         public static final double limelightAngle = 0; //NEED TO CALCULATE IN DEGREES
         public static final double targetHeight = 0; //NEED TO MEASURE IN INCHES
         public static final double limelightHeight = 0; //NEED TO MEASURE IN INCHES
+
+        public static class PID_Values  {
+
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
+
+        }
+
     }
 }
