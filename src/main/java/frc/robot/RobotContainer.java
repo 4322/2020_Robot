@@ -9,11 +9,19 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.Disable_Kicker;
+import frc.robot.commands.Disable_Shooter;
 import frc.robot.commands.Drive_Manual;
+import frc.robot.commands.Enable_Kicker;
+import frc.robot.commands.Enable_Shooter;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Hood_Manual;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter_Hood;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -28,12 +36,27 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   public final Drivebase drivebase = new Drivebase();
   public final Limelight limelight = new Limelight();
+  public final Shooter shooter = new Shooter();
+  public final Shooter_Hood shooterHood = new Shooter_Hood();
+  public final Kicker kicker = new Kicker();
+  
   
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+
   public final Drive_Manual driveManual = new Drive_Manual(drivebase);
 
-  public static frc.robot.XboxController pilot = new frc.robot.XboxController();
+  public final Hood_Manual hoodManual = new Hood_Manual(shooterHood);
+
+  public final Enable_Shooter enableShooter = new Enable_Shooter(shooter);
+  public final Disable_Shooter disableShooter = new Disable_Shooter(shooter);
+
+  public final Enable_Kicker enableKicker = new Enable_Kicker(kicker);
+  public final Disable_Kicker disableKicker = new Disable_Kicker(kicker);
+
+
+  public static frc.robot.XboxController pilot = new frc.robot.XboxController(0);
+  public static frc.robot.XboxController coPilot = new frc.robot.XboxController(1);
 
   
 
@@ -46,6 +69,9 @@ public class RobotContainer {
     configureButtonBindings();
 
     drivebase.setDefaultCommand(driveManual);
+    shooterHood.setDefaultCommand(hoodManual);
+
+
   }
 
   /**
@@ -55,6 +81,14 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    coPilot.lb.whenPressed(enableShooter);
+    coPilot.rb.whenPressed(disableShooter);
+
+    coPilot.x.whenPressed(enableKicker);
+    coPilot.b.whenPressed(disableKicker);
+
+    
   }
 
 

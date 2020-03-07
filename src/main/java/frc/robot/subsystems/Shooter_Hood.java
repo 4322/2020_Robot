@@ -7,16 +7,36 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-public class Hooded_Shooter extends SubsystemBase {
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+public class Shooter_Hood extends SubsystemBase {
   /**
-   * Creates a new Hooded_Shooter.
+   * Creates a new Shooter_Hood.
    */
-  public Hooded_Shooter() {
+
+   private WPI_TalonSRX hoodMotor;
+   //private Encoder hoodEncoder;
+
+  public Shooter_Hood() {
+
+    hoodMotor = new WPI_TalonSRX(Constants.Shooter_Constants.hoodTalon_ID);
+
+    //hoodEncoder = new Encoder(0, 1);
 
   }
 
+  public void setHood(double power)
+  {
+    hoodMotor.set(power);
+  }
+
+
+
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
