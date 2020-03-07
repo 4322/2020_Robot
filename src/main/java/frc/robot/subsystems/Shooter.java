@@ -9,7 +9,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -29,6 +31,8 @@ public class Shooter extends PIDSubsystem {
   private CANSparkMax flywheelTwo;
   private CANSparkMax kickerMotor;
   private WPI_TalonSRX shooterHood;
+
+  private CANPIDController pidController;
 
   private CANEncoder flywheelOne_Encoder;
   private CANEncoder flywheelTwo_Encoder;
@@ -53,6 +57,8 @@ public class Shooter extends PIDSubsystem {
     flywheelTwo_Encoder = new CANEncoder(flywheelTwo);
     kickerMotor_Encoder = new CANEncoder(kickerMotor);
 
+    pidController = new CANPIDController(flywheelOne);
+
     flywheelOne.setIdleMode(IdleMode.kCoast);
     flywheelTwo.setIdleMode(IdleMode.kCoast);
 
@@ -60,6 +66,14 @@ public class Shooter extends PIDSubsystem {
     flywheelTwo.burnFlash();
 
     shooterHood_Encoder = new Encoder(0, 1);  //USES DIO PINS 0 AND 1 ON THE ROBORIO
+
+    pidController.setP(Constants.Shooter_Constants.PID_Values.kP);
+    pidController.setI(Constants.Shooter_Constants.PID_Values.kI);
+    pidController.setD(Constants.Shooter_Constants.PID_Values.kD);
+    pidController.setIZone(Constants.Shooter_Constants.PID_Values.kIz);
+    pidController.setFF(Constants.Shooter_Constants.PID_Values.kFF);
+    pidController.setOutputRange(Constants.Shooter_Constants.PID_Values.kMin, Constants.Shooter_Constants.PID_Values.kMax);
+
 
     flywheelOne.setInverted(true);
     
@@ -99,7 +113,13 @@ public class Shooter extends PIDSubsystem {
 
   public void spinShooter()
   {
-    flywheelOne.set(.5);
+    flywheelOne.set(.7);
+  }
+
+
+  public void reachSetpoint()
+  {
+    pidController.setReference(Constants.Shooter_Constants.maxRPM, ControlType.kVelocity);
   }
 
   public void spinKicker()

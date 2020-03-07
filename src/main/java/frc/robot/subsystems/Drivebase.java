@@ -7,11 +7,13 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.EncoderType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +23,7 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 
-public class Drivebase extends PIDSubsystem {
+public class Drivebase extends SubsystemBase {
 
   private CANSparkMax rightMaster;
   private CANSparkMax rightSlave1;
@@ -39,6 +41,8 @@ public class Drivebase extends PIDSubsystem {
   private CANEncoder leftSlave1_encoder;
   private CANEncoder leftSlave2_encoder;
 
+  private AHRS navX;
+
   private SpeedControllerGroup rightMotors;
   private SpeedControllerGroup leftMotors;
 
@@ -52,8 +56,8 @@ public class Drivebase extends PIDSubsystem {
    */
   public Drivebase() {
 
-    super(new PIDController(Constants.Drivebase_Constants.PID_Values.kP, Constants.Drivebase_Constants.PID_Values.kI, Constants.Drivebase_Constants.PID_Values.kD));
-    
+    navX = new AHRS(SPI.Port.kMXP);
+  
     rightMaster = new CANSparkMax(Constants.Drivebase_Constants.rightMasterSpark_ID, MotorType.kBrushless);
     rightSlave1 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave1Spark_ID, MotorType.kBrushless);
     rightSlave2 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave2Spark_ID, MotorType.kBrushless);
@@ -69,6 +73,14 @@ public class Drivebase extends PIDSubsystem {
     leftMaster_encoder = leftMaster.getEncoder();
     leftSlave1_encoder = leftSlave1.getEncoder();
     leftSlave2_encoder = leftSlave2.getEncoder();
+
+    rightMaster_encoder.setPosition(0);
+    rightSlave1_encoder.setPosition(0);
+    rightSlave2_encoder.setPosition(0);
+    
+    leftMaster_encoder.setPosition(0);
+    leftSlave1_encoder.setPosition(0);
+    leftSlave2_encoder.setPosition(0);
 
     rightMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
     rightSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
@@ -284,15 +296,5 @@ public class Drivebase extends PIDSubsystem {
     // This method will be called once per scheduler run
   }
 
-  @Override
-  protected void useOutput(double output, double setpoint) {
-    // TODO Auto-generated method stub
-
-  }
-
-  @Override
-  protected double getMeasurement() {
-    // TODO Auto-generated method stub
-    return 0;
-  }
+  
 }
