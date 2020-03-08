@@ -37,6 +37,9 @@ public final class Constants {
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
 
+        public static final double distPerPulse = .0011114506;
+        public static final double velocityConversion = .0007780154;
+
         public static final int positionConversionFactor = 10;  //NEED TO SET FOR REALS
 
         public static class PID_Values {
