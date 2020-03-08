@@ -51,7 +51,8 @@ public class Arm extends SubsystemBase {
       ArmPidController.setSmartMotionMaxAccel(Constants.ArmConstants.PID_Values.maxAcceleration, smartmotionslot);
     
       ArmPidController.setSmartMotionAllowedClosedLoopError(Constants.ArmConstants.PID_Values.allowed_error, smartmotionslot);
-      
+  
+  }
 
   public double getArmEncoderPosition() {
     return (leftArm_encoder.getPosition() + rightArm_encoder.getPosition())/2;
@@ -71,6 +72,11 @@ public class Arm extends SubsystemBase {
     ArmPidController.setReference(Constants.ArmConstants.collectSetpoint, ControlType.kSmartMotion);
   }
 
+  public void set(double power)
+  {
+    leftArm.set(power);
+  }
+
   public void reachStartingConfiguration()
   {
     ArmPidController.setReference(Constants.ArmConstants.startingConfigSetpoint, ControlType.kSmartMotion);
@@ -85,5 +91,6 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    displayArmEncoderValues();
   }
 }

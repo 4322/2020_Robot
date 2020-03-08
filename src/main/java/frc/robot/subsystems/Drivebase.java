@@ -16,6 +16,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -127,6 +128,8 @@ public class Drivebase extends SubsystemBase {
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
+    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+
   }
 
   @Override
@@ -134,6 +137,16 @@ public class Drivebase extends SubsystemBase {
     // This method will be called once per scheduler run
 
     odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoders_Position(), getRightEncoders_Position());
+  }
+
+  public Pose2d getPose()
+  {
+    return odometry.getPoseMeters()
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
   public void resetEncoders()
@@ -154,6 +167,11 @@ public class Drivebase extends SubsystemBase {
 
   public double getHeading() {
     return Math.IEEEremainder(navX.getAngle(), 360);
+  }
+
+  public double getRurnRate()
+  {
+    return navX.getRate();
   }
 
   public void limelightAim_PID()
@@ -182,6 +200,11 @@ public class Drivebase extends SubsystemBase {
                 steering_adjust = kP * heading_error + minCommand;
         }
     drive.tankDrive(steering_adjust, -steering_adjust);
+  }
+
+  public void zeroHeading()
+  {
+    navX.zeroYaw();
   }
   
   /****************************************************

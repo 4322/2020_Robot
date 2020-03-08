@@ -58,6 +58,11 @@ public final class Constants {
     {
         public static final int leftMotor_ID = 1;
         public static final int rightMotor_ID = 2;
+        public static final int collectorTalonID = 7;
+
+        public static final double collectSetpoint = 0;
+        public static final double startingConfigSetpoint = 0;
+        public static final double climbSetpoint = 0;
 
         public static class PID_Values {
             public static final double kP = 0;
@@ -115,10 +120,5 @@ public final class Constants {
         }
     }
 
-    public static class Arm_Constants
-    {
-        public static final int collectorTalonID = 11;
-        public static final int leftArmSpark_ID = 8;
-        public static final int rightArmSpark_ID = 9;
-    }
+
 }
