@@ -54,6 +54,29 @@ public final class Constants {
         }
     }
 
+    public static class ArmConstants
+    {
+        public static final int leftMotor_ID = 1;
+        public static final int rightMotor_ID = 2;
+
+        public static class PID_Values {
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
+            public static final double kIz = 0;
+            public static final double kFF = 0;
+            public static final double kMaxOutput = 0;
+            public static final double kMinOutput = 0;
+            public static final double maxRPM = 0;
+
+            public static final double maxVelocity = 0;
+            public static final double maxAcceleration = 0;
+            public static final double minVelocity = 0;
+
+            public static final double allowed_error = 0;
+        }
+    }
+
     public static class Shooter_Constants
     {
 
