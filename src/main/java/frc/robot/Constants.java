@@ -95,5 +95,7 @@ public final class Constants {
     public static class Arm_Constants
     {
         public static final int collectorTalonID = 11;
+        public static final int leftArmSpark_ID = 8;
+        public static final int rightArmSpark_ID = 9;
     }
 }
