@@ -7,9 +7,11 @@
 
 package frc.robot.subsystems;
 
+import com.fasterxml.jackson.annotation.JacksonInject.Value;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,24 +51,7 @@ public class Arm extends SubsystemBase {
       ArmPidController.setSmartMotionMaxAccel(Constants.ArmConstants.PID_Values.maxAcceleration, smartmotionslot);
     
       ArmPidController.setSmartMotionAllowedClosedLoopError(Constants.ArmConstants.PID_Values.allowed_error, smartmotionslot);
-      // display PID coefficients on SmartDashboard
-      SmartDashboard.putNumber("P Gain", Constants.ArmConstants.PID_Values.kP);
-      SmartDashboard.putNumber("I Gain", Constants.ArmConstants.PID_Values.kI);
-      SmartDashboard.putNumber("D Gain", Constants.ArmConstants.PID_Values.kD);
-      SmartDashboard.putNumber("I Zone", Constants.ArmConstants.PID_Values.kIz);
-      SmartDashboard.putNumber("Feed Forward", Constants.ArmConstants.PID_Values.kFF);
-      SmartDashboard.putNumber("Max Output", Constants.ArmConstants.PID_Values.kMaxOutput);
-      SmartDashboard.putNumber("Min Output", Constants.ArmConstants.PID_Values.kMinOutput);
-
-      // display Smart Motion coefficients
-      SmartDashboard.putNumber("Max Velocity", Constants.ArmConstants.PID_Values.maxVelocity);
-      SmartDashboard.putNumber("Min Velocity", Constants.ArmConstants.PID_Values.minVelocity);
-      SmartDashboard.putNumber("Max Acceleration", Constants.ArmConstants.PID_Values.maxAcceleration);
-      SmartDashboard.putNumber("Allowed Closed Loop Error", Constants.ArmConstants.PID_Values.allowed_error);
-      SmartDashboard.putNumber("Set Position", 0);
-      SmartDashboard.putNumber("Set Velocity", 0);
-  
-  }
+      
 
   public double getArmEncoderPosition() {
     return (leftArm_encoder.getPosition() + rightArm_encoder.getPosition())/2;
@@ -79,6 +64,21 @@ public class Arm extends SubsystemBase {
   public void displayArmEncoderValues() {
     SmartDashboard.putNumber("Arm Encoder Position", getArmEncoderPosition());
     SmartDashboard.putNumber("Arm Encoder Velocity", getArmEncoderVelocity());
+  }
+
+  public void reachCollectPosition()
+  {
+    ArmPidController.setReference(Constants.ArmConstants.collectSetpoint, ControlType.kSmartMotion);
+  }
+
+  public void reachStartingConfiguration()
+  {
+    ArmPidController.setReference(Constants.ArmConstants.startingConfigSetpoint, ControlType.kSmartMotion);
+  }
+
+  public void reachClimbPosition()
+  {
+    ArmPidController.setReference(Constants.ArmConstants.climbSetpoint, ControlType.kSmartMotion);
   }
 
 
