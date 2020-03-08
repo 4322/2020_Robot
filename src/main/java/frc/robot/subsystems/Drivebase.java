@@ -16,6 +16,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -42,6 +45,8 @@ public class Drivebase extends SubsystemBase {
   private CANEncoder leftSlave2_encoder;
 
   private AHRS navX;
+
+  private DifferentialDriveOdometry odometry;
 
   private SpeedControllerGroup rightMotors;
   private SpeedControllerGroup leftMotors;
@@ -74,13 +79,24 @@ public class Drivebase extends SubsystemBase {
     leftSlave1_encoder = leftSlave1.getEncoder();
     leftSlave2_encoder = leftSlave2.getEncoder();
 
-    rightMaster_encoder.setPosition(0);
-    rightSlave1_encoder.setPosition(0);
-    rightSlave2_encoder.setPosition(0);
+   
+    leftMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    leftSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    leftSlave2_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+
+    rightMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    rightSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    rightSlave2_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+
+    leftMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+    leftSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+    leftSlave2_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
     
-    leftMaster_encoder.setPosition(0);
-    leftSlave1_encoder.setPosition(0);
-    leftSlave2_encoder.setPosition(0);
+    rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+    rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+    leftSlave2_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+
+    resetEncoders();
 
     rightMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
     rightSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
@@ -105,6 +121,32 @@ public class Drivebase extends SubsystemBase {
 
   }
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+
+    odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoders_Position(), getRightEncoders_Position());
+  }
+
+  public void resetEncoders()
+  {
+    rightMaster_encoder.setPosition(0);
+    rightSlave1_encoder.setPosition(0);
+    rightSlave2_encoder.setPosition(0);
+    
+    leftMaster_encoder.setPosition(0);
+    leftSlave1_encoder.setPosition(0);
+    leftSlave2_encoder.setPosition(0);
+
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getLeftEncoders_Velocity(), getRightEncoders_Velocity());
+  }
+
+  public double getHeading() {
+    return Math.IEEEremainder(navX.getAngle(), 360);
+  }
   
   /****************************************************
    ************ DIFFERENTIAL DRIVE MODES **************
@@ -117,6 +159,12 @@ public class Drivebase extends SubsystemBase {
   public void arcadeDrive(double power, double turn, boolean squaredInputs)
   {
     drive.arcadeDrive(power, turn, squaredInputs);
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    leftMotors.setVoltage(leftVolts);
+    rightMotors.setVoltage(-rightVolts);
+    drive.feed();
   }
 
 
@@ -291,10 +339,7 @@ public class Drivebase extends SubsystemBase {
   
   
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+ 
 
   
 }
