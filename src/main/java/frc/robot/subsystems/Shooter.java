@@ -29,16 +29,13 @@ public class Shooter extends PIDSubsystem {
 
   private CANSparkMax flywheelOne;
   private CANSparkMax flywheelTwo;
-  private CANSparkMax kickerMotor;
-  private WPI_TalonSRX shooterHood;
+
 
   private CANPIDController pidController;
 
   private CANEncoder flywheelOne_Encoder;
   private CANEncoder flywheelTwo_Encoder;
-  private CANEncoder kickerMotor_Encoder;
-
-  private Encoder shooterHood_Encoder;
+  
 
 
 
@@ -50,13 +47,12 @@ public class Shooter extends PIDSubsystem {
     
     flywheelOne = new CANSparkMax(Constants.Shooter_Constants.flywheelOneSpark_ID, MotorType.kBrushless);
     flywheelTwo = new CANSparkMax(Constants.Shooter_Constants.flywheelTwoSpark_ID, MotorType.kBrushless);
-    kickerMotor = new CANSparkMax(Constants.Shooter_Constants.kickerSpark_ID, MotorType.kBrushless);
-    shooterHood = new WPI_TalonSRX(Constants.Shooter_Constants.hoodTalon_ID);
+    
+    
 
     flywheelOne_Encoder = new CANEncoder(flywheelOne);
     flywheelTwo_Encoder = new CANEncoder(flywheelTwo);
-    kickerMotor_Encoder = new CANEncoder(kickerMotor);
-
+    
     pidController = new CANPIDController(flywheelOne);
 
     flywheelOne.setIdleMode(IdleMode.kCoast);
@@ -64,8 +60,6 @@ public class Shooter extends PIDSubsystem {
 
     flywheelOne.burnFlash();
     flywheelTwo.burnFlash();
-
-    shooterHood_Encoder = new Encoder(0, 1);  //USES DIO PINS 0 AND 1 ON THE ROBORIO
 
     pidController.setP(Constants.Shooter_Constants.PID_Values.kP);
     pidController.setI(Constants.Shooter_Constants.PID_Values.kI);
@@ -106,10 +100,6 @@ public class Shooter extends PIDSubsystem {
     flywheelOne.set(0);
   }
 
-  public void stopKicker()
-  {
-    flywheelTwo.set(0);
-  }
 
   public void spinShooter()
   {
@@ -122,15 +112,6 @@ public class Shooter extends PIDSubsystem {
     pidController.setReference(Constants.Shooter_Constants.maxRPM, ControlType.kVelocity);
   }
 
-  public void spinKicker()
-  {
-    kickerMotor.set(.5);
-  }
-
-  public void setHood(double power)
-  {
-    shooterHood.set(power);
-  }
 
   public double getShooterEncoder_Position()
   {
@@ -142,27 +123,9 @@ public class Shooter extends PIDSubsystem {
     return ((flywheelOne_Encoder.getVelocity() + flywheelTwo_Encoder.getVelocity() / 2));
   }
 
-  public double getKickerEncoder_Position()
-  {
-    return kickerMotor_Encoder.getPosition();
-  }
-
-  public double getKickerEncoder_Velocity()
-  {
-    return kickerMotor_Encoder.getVelocity();
-  }
-
-  public double getHoodEncoder_Position()
-  {
-    return shooterHood_Encoder.getDistance();
-  }
-
   public void displayEncoderValues()
   {
     SmartDashboard.putNumber("Shooter Velocity", getShooterEncoder_Velocity());
     SmartDashboard.putNumber("Shooter Position", getShooterEncoder_Position());
-    SmartDashboard.putNumber("Kicker Velocity", getKickerEncoder_Velocity());
-    SmartDashboard.putNumber("Kicker Position", getKickerEncoder_Position());
-    SmartDashboard.putNumber("Hood Position", getHoodEncoder_Position());
   }
 }

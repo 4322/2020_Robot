@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class Drivebase extends SubsystemBase {
 
@@ -51,6 +52,10 @@ public class Drivebase extends SubsystemBase {
   private SpeedControllerGroup rightMotors;
   private SpeedControllerGroup leftMotors;
 
+  private PIDController limelightPidController;
+
+  private Limelight limelight;
+
   
 
 
@@ -62,6 +67,10 @@ public class Drivebase extends SubsystemBase {
   public Drivebase() {
 
     navX = new AHRS(SPI.Port.kMXP);
+
+    limelightPidController = new PIDController(Constants.Limelight_Constants.PID_Values.kP, Constants.Limelight_Constants.PID_Values.kI, Constants.Limelight_Constants.PID_Values.kD);
+
+    limelight = new Limelight();
   
     rightMaster = new CANSparkMax(Constants.Drivebase_Constants.rightMasterSpark_ID, MotorType.kBrushless);
     rightSlave1 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave1Spark_ID, MotorType.kBrushless);
@@ -147,6 +156,34 @@ public class Drivebase extends SubsystemBase {
   public double getHeading() {
     return Math.IEEEremainder(navX.getAngle(), 360);
   }
+
+  public void limelightAim_PID()
+  {
+    double offset = limelight.getX_Offset();
+    double error = offset * .01;
+    limelightPidController.setTolerance(.02);
+    double motorOutput = limelightPidController.calculate(error, 0);
+    SmartDashboard.putNumber("Turn Output", motorOutput);
+    tankDrive(motorOutput, -motorOutput);
+  }
+
+  public void limelightAim_Simple()
+  {
+    double kP = -0.1;
+    double minCommand = .05;
+    double heading_error = -limelight.getX_Offset();
+    double steering_adjust = 0.0f;
+
+        if (limelight.getX_Offset() > 1.0)
+        {
+                steering_adjust = kP * heading_error - minCommand;
+        }
+        else if (limelight.getX_Offset() < 1.0)
+        {
+                steering_adjust = kP * heading_error + minCommand;
+        }
+    drive.tankDrive(steering_adjust, -steering_adjust);
+  }
   
   /****************************************************
    ************ DIFFERENTIAL DRIVE MODES **************
@@ -165,6 +202,11 @@ public class Drivebase extends SubsystemBase {
     leftMotors.setVoltage(leftVolts);
     rightMotors.setVoltage(-rightVolts);
     drive.feed();
+  }
+
+  public void tankDrive(double left, double right)
+  {
+    drive.tankDrive(left, right);
   }
 
 

@@ -7,15 +7,39 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Collector extends SubsystemBase {
   /**
    * Creates a new Collector.
    */
+
+   private WPI_TalonSRX collectorMotor;
+
   public Collector() {
 
+    collectorMotor = new WPI_TalonSRX(Constants.Arm_Constants.collectorTalonID);
+
   }
+
+  public void collect()
+  {
+    collectorMotor.set(.7);
+  }
+
+  public void eject()
+  {
+    collectorMotor.set(-.7);
+  }
+
+  public void stop()
+  {
+    collectorMotor.set(0);
+  }
+  
 
   @Override
   public void periodic() {
