@@ -69,7 +69,6 @@ public class Drivebase extends SubsystemBase {
     navX = new AHRS(SPI.Port.kMXP);
 
     limelightPidController = new PIDController(Constants.Limelight_Constants.PID_Values.kP, Constants.Limelight_Constants.PID_Values.kI, Constants.Limelight_Constants.PID_Values.kD);
-
     limelight = new Limelight();
   
     rightMaster = new CANSparkMax(Constants.Drivebase_Constants.rightMasterSpark_ID, MotorType.kBrushless);
