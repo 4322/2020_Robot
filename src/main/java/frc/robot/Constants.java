@@ -56,9 +56,6 @@ public final class Constants {
 
     public static class Shooter_Constants
     {
-        public static final double limelightAngle = 30; //NEED TO CALCULATE IN DEGREES
-        public static final double targetHeight = 98; //NEED TO MEASURE IN INCHES
-        public static final double limelightHeight = 22.5; //NEED TO MEASURE IN INCHES
 
         public static final int flywheelOneSpark_ID = 4;
         public static final int flywheelTwoSpark_ID = 8;
@@ -79,5 +76,24 @@ public final class Constants {
 
         }
 
+    }
+
+    public static class Limelight_Constants
+    {
+        public static final double limelightAngle = 30; //NEED TO CALCULATE IN DEGREES
+        public static final double targetHeight = 98; //NEED TO MEASURE IN INCHES
+        public static final double limelightHeight = 22.5; //NEED TO MEASURE IN INCHES
+
+        public static class PID_Values
+        {
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
+        }
+    }
+
+    public static class Arm_Constants
+    {
+        public static final int collectorTalonID = 11;
     }
 }

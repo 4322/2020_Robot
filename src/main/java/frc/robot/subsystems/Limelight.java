@@ -31,6 +31,7 @@ public class Limelight extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     displayValues();
+    displayDistance();
   }
 
   public double getX_Offset()
@@ -64,8 +65,13 @@ public class Limelight extends SubsystemBase {
   //Formula Referenced From: https://docs.limelightvision.io/en/latest/cs_estimating_distance.html
   public double getDistance()
   {
-    double distance = (Constants.Shooter_Constants.targetHeight - Constants.Shooter_Constants.limelightHeight) / (Math.tan(Constants.Shooter_Constants.limelightAngle + getY_Offset()));
+    double distance = (Constants.Limelight_Constants.targetHeight - Constants.Limelight_Constants.limelightHeight) / (Math.tan(Constants.Limelight_Constants.limelightAngle + getY_Offset()));
     return distance;
+  }
+
+  public void displayDistance()
+  {
+    SmartDashboard.putNumber("Distance to Target", getDistance());
   }
 
 
