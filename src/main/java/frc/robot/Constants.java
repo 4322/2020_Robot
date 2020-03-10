@@ -92,7 +92,6 @@ public final class Constants {
         public static final int flywheelOneSpark_ID = 4;
         public static final int flywheelTwoSpark_ID = 8;
         public static final int kickerSpark_ID = 5;
-        public static final int hoodTalon_ID = 12;
 
         public static final int maxRPM = 4900;
 
@@ -107,7 +106,21 @@ public final class Constants {
             public static final int kMin = -1;
 
         }
+    }
 
+    public static class Hood_Constants
+    {
+        public static final int hoodTalon_ID = 12;
+        public static final int hoodTolerance = 10;
+        public static final int setpointOne = 50; 
+
+        public static class PID_Values
+        {
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
+
+        }
     }
     public static class Hopper_Constants
     {
