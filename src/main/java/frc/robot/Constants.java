@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
+
 /** 
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants.  This class should not be used for any other purpose.  All constants should be
@@ -41,6 +43,8 @@ public final class Constants {
         public static final double velocityConversion = .0007780154;
 
         public static final int positionConversionFactor = 10;  //NEED TO SET FOR REALS
+
+        public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
         public static class PID_Values {
 
@@ -105,7 +109,12 @@ public final class Constants {
         }
 
     }
+    public static class Hopper_Constants
+    {
+    public static final int HopperMotorslaveID = 0; //CHANGE
+    public static final int HopperMotormasterID = 0; //change
 
+    }
     public static class Limelight_Constants
     {
         public static final double limelightAngle = 30; //NEED TO CALCULATE IN DEGREES

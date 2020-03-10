@@ -141,7 +141,7 @@ public class Drivebase extends SubsystemBase {
 
   public Pose2d getPose()
   {
-    return odometry.getPoseMeters()
+    return odometry.getPoseMeters();
   }
 
   public void resetOdometry(Pose2d pose) {

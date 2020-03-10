@@ -9,6 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import frc.robot.commands.Arm_Manual;
 import frc.robot.commands.Collecter_Collect;
 import frc.robot.commands.Collector_Eject;
 import frc.robot.commands.Collector_Stop;
@@ -18,10 +21,18 @@ import frc.robot.commands.Drive_Manual;
 import frc.robot.commands.Enable_Kicker;
 import frc.robot.commands.Enable_Shooter;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Extend_Climber;
 import frc.robot.commands.Hood_Manual;
+import frc.robot.commands.Hopper_Eject;
+import frc.robot.commands.Hopper_Intake;
+import frc.robot.commands.Hopper_Stop;
+import frc.robot.commands.Retract_Climber;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Shooter;
@@ -44,6 +55,9 @@ public class RobotContainer {
   public final Shooter_Hood shooterHood = new Shooter_Hood();
   public final Kicker kicker = new Kicker();
   public final Collector collector = new Collector();
+  public final Arm arm = new Arm();
+  public final Climber climber = new Climber();
+  public final Hopper hopper = new Hopper();
   
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -60,7 +74,15 @@ public class RobotContainer {
   public final Collecter_Collect collectorCollect = new Collecter_Collect(collector);
   public final Collector_Eject collectorEject = new Collector_Eject(collector);
   public final Collector_Stop collectorStop = new Collector_Stop(collector);
+
+  public final Extend_Climber extendClimber = new Extend_Climber(climber);
+  public final Retract_Climber retractClimber = new Retract_Climber(climber);
   
+  public final Arm_Manual armManual = new Arm_Manual(arm);
+
+  public final Hopper_Intake hopperIntake = new Hopper_Intake(hopper);
+  public final Hopper_Eject hopperEject = new Hopper_Eject(hopper);
+  public final Hopper_Stop hopperStop = new Hopper_Stop(hopper);
 
   public static frc.robot.XboxController pilot = new frc.robot.XboxController(0);
   public static frc.robot.XboxController coPilot = new frc.robot.XboxController(1);
@@ -78,7 +100,7 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveManual);
     shooterHood.setDefaultCommand(hoodManual);
     collector.setDefaultCommand(collectorStop);
-
+    hopper.setDefaultCommand(hopperStop);
 
   }
 
@@ -95,6 +117,9 @@ public class RobotContainer {
 
     coPilot.x.whenPressed(enableKicker);
     coPilot.b.whenPressed(disableKicker);
+    
+    coPilot.lt.whileHeld(hopperEject);
+    coPilot.rt.whileHeld(hopperIntake);
 
     pilot.lt.whileHeld(collectorCollect, true);
     pilot.rt.whileHeld(collectorEject, true);
@@ -110,6 +135,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+
+    var autoVoltageConstraint =
+    new DifferentialDriveVoltageConstraint(
+        new SimpleMotorFeedforward(Constants.Drivebase_Constants.PID_Values.ksVolts,
+                                   Constants.Drivebase_Constants.PID_Values.kaVoltSecondsSquaredPerMeter,
+                                   Constants.Drivebase_Constants.PID_Values.kvVoltSecondsPerMeter),
+        Constants.Drivebase_Constants.kinematics,
+        10);
     return m_autoCommand;
   }
 }
