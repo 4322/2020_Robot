@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
@@ -27,12 +28,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry ty = table.getEntry("ty");
-  NetworkTableEntry ta = table.getEntry("ta");
-  NetworkTableEntry tv = table.getEntry("tv");
+  private Compressor compressor = new Compressor(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,6 +39,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    compressor.start();
+    
   }
 
   /**
@@ -64,6 +62,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Y Offset", ty.getDouble(0.0));
     SmartDashboard.putBoolean("Target Visible", tv.getBoolean(false));
     SmartDashboard.putNumber("Target Area", ta.getDouble(0.0));
+
+
     
     
   }
