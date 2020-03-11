@@ -37,22 +37,23 @@ public class Arm extends SubsystemBase {
       leftArm_encoder = new CANEncoder(leftArm);
       rightArm_encoder = new CANEncoder(rightArm);
 
+      ArmPidController = rightArm.getPIDController(); 
 
-      leftArm.follow(rightArm, true);
+      rightArm.follow(leftArm, true);
 
-      // ArmPidController.setP(Constants.ArmConstants.PID_Values.kP);
-      // ArmPidController.setI(Constants.ArmConstants.PID_Values.kI);
-      // ArmPidController.setD(Constants.ArmConstants.PID_Values.kD);
-      // ArmPidController.setIZone(Constants.ArmConstants.PID_Values.kIz);
-      // ArmPidController.setFF(Constants.ArmConstants.PID_Values.kFF);
-      // ArmPidController.setOutputRange(Constants.ArmConstants.PID_Values.kMinOutput,Constants.ArmConstants.PID_Values.kMaxOutput);
+      ArmPidController.setP(Constants.ArmConstants.PID_Values.kP);
+      ArmPidController.setI(Constants.ArmConstants.PID_Values.kI);
+      ArmPidController.setD(Constants.ArmConstants.PID_Values.kD);
+      ArmPidController.setIZone(Constants.ArmConstants.PID_Values.kIz);
+      ArmPidController.setFF(Constants.ArmConstants.PID_Values.kFF);
+      ArmPidController.setOutputRange(Constants.ArmConstants.PID_Values.kMinOutput,Constants.ArmConstants.PID_Values.kMaxOutput);
 
-      // int smartmotionslot = 0;
-      // ArmPidController.setSmartMotionMaxVelocity(Constants.ArmConstants.PID_Values.maxVelocity, smartmotionslot);
-      // ArmPidController.setSmartMotionMinOutputVelocity(Constants.ArmConstants.PID_Values.minVelocity, smartmotionslot);
-      // ArmPidController.setSmartMotionMaxAccel(Constants.ArmConstants.PID_Values.maxAcceleration, smartmotionslot);
+      int smartmotionslot = 0;
+      ArmPidController.setSmartMotionMaxVelocity(Constants.ArmConstants.PID_Values.maxVelocity, smartmotionslot);
+      ArmPidController.setSmartMotionMinOutputVelocity(Constants.ArmConstants.PID_Values.minVelocity, smartmotionslot);
+      ArmPidController.setSmartMotionMaxAccel(Constants.ArmConstants.PID_Values.maxAcceleration, smartmotionslot);
     
-      // ArmPidController.setSmartMotionAllowedClosedLoopError(Constants.ArmConstants.PID_Values.allowed_error, smartmotionslot);
+      ArmPidController.setSmartMotionAllowedClosedLoopError(Constants.ArmConstants.PID_Values.allowed_error, smartmotionslot);
   
   }
 
@@ -76,7 +77,7 @@ public class Arm extends SubsystemBase {
 
   public void set(double power)
   {
-    rightArm.set(power);
+    leftArm.set(power);
   }
 
   public void reachStartingConfiguration()

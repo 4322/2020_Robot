@@ -27,6 +27,7 @@ public class Hopper extends SubsystemBase {
   hopperMotorMaster = new WPI_TalonSRX(Constants.Hopper_Constants.HopperMotormasterID);
   hopperMotorslave = new WPI_TalonSRX(Constants.Hopper_Constants.HopperMotorslaveID);
 
+  hopperMotorMaster.setInverted(true);
   hopperMotorslave.follow(hopperMotorMaster);
   hopperMotorslave.setInverted(InvertType.OpposeMaster);
 

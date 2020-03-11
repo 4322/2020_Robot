@@ -133,6 +133,9 @@ public class RobotContainer {
     pilot.lt.whileHeld(collectorCollect, true);
     pilot.rt.whileHeld(collectorEject, true);
 
+    coPilot.y.whenPressed(extendClimber);
+    coPilot.a.whenPressed(retractClimber);
+
     
 
     

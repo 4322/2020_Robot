@@ -30,35 +30,35 @@ import frc.robot.RobotContainer;
 
 public class Drivebase extends SubsystemBase {
 
+  // Drivebase Motors
   private CANSparkMax rightMaster;
   private CANSparkMax rightSlave1;
-  
   private CANSparkMax leftMaster;
   private CANSparkMax leftSlave1;
   
-
+  // Drivebase Motor Encoders
   private CANEncoder rightMaster_encoder;
   private CANEncoder rightSlave1_encoder;
-  
-
   private CANEncoder leftMaster_encoder;
   private CANEncoder leftSlave1_encoder;
   
-
+  // NavX Gyro
   private AHRS navX;
 
+  // Odometry Object for Trajectory Following
   private DifferentialDriveOdometry odometry;
 
+  //Speed Controller Groups for Each Side of Drivebase
   private SpeedControllerGroup rightMotors;
   private SpeedControllerGroup leftMotors;
 
+  // PID Controller that Controls Turning the Robot Using Values From the Limelight
   private PIDController limelightPidController;
 
+  // Limelight Object to Access Vision Values
   private Limelight limelight;
 
-  
-
-
+  // Drive Object to Enable Various Modes
   private DifferentialDrive drive;
 
   /**
@@ -66,110 +66,108 @@ public class Drivebase extends SubsystemBase {
    */
   public Drivebase() {
 
+    // Creates NavX
     navX = new AHRS(SPI.Port.kMXP);
 
+    // Creates Limlight and Limelight PID Controller
     limelightPidController = new PIDController(Constants.Limelight_Constants.PID_Values.kP, Constants.Limelight_Constants.PID_Values.kI, Constants.Limelight_Constants.PID_Values.kD);
     limelight = new Limelight();
   
+    // Creates Drivebase Motors
     rightMaster = new CANSparkMax(Constants.Drivebase_Constants.rightMasterSpark_ID, MotorType.kBrushless);
     rightSlave1 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave1Spark_ID, MotorType.kBrushless);
-    
-
     leftMaster = new CANSparkMax(Constants.Drivebase_Constants.leftMasterSpark_ID, MotorType.kBrushless);
     leftSlave1 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave1Spark_ID, MotorType.kBrushless);
     
+    // Creates Drivebase Encoders
     rightMaster_encoder = rightMaster.getEncoder();
     rightSlave1_encoder = rightSlave1.getEncoder();
-    
-
     leftMaster_encoder = leftMaster.getEncoder();
     leftSlave1_encoder = leftSlave1.getEncoder();
     
 
-   
-    leftMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
-    leftSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    // Configures Motors For The Drivebase Gear Ratio, Current Limit, and Then Saves Settings to Motors
+    setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+    setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
+    saveMotorSettings();
     
-
-    rightMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
-    rightSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
-    
-
-    leftMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
-    leftSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
-    
-    rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
-    rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
-    
-
-    resetEncoders();
-
-    rightMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    rightSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    
-
-    leftMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    leftSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    
-
-    rightMaster.burnFlash();
-    rightSlave1.burnFlash();
-    
-
-    leftMaster.burnFlash();
-    leftSlave1.burnFlash();
-    
-
+    // Groups Motor Controllers Instead of Making Slaves Follow Masters
     rightMotors = new SpeedControllerGroup(rightMaster, rightSlave1);
     leftMotors = new SpeedControllerGroup(leftMaster, leftSlave1);
 
+    //Creates New Drive Object to Allow for Tank, Arcade, and Curvature Drive
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
+    //Creates an Odometry Object That Is Used To Allow the Robot to Follow Trajectories
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
   }
 
+  /**********************************************************************************************************************************
+  ***********************************************************************************************************************************
+  *************************************** DRIVEBASE METHODS ARE NOW STORED BELOW ****************************************************
+  ***********************************************************************************************************************************
+  ***********************************************************************************************************************************/
+  
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-
+    
+    // Odometry Calculates the Robot's Position On The Field so It Will Constantly Update by Reading Encoder and Gyro Values
     odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncoders_Position(), getRightEncoders_Position());
+
   }
 
+  /****************************************************
+   ********* METHODS FOR TRAJECTORY FOLLOWING  ********
+   ****************************************************/
+ 
+  // Gets Robot's Current Position on the Field
   public Pose2d getPose()
   {
     return odometry.getPoseMeters();
   }
 
+  // Resets the Robot's Current Position Read By The Odometry Object
   public void resetOdometry(Pose2d pose) {
     resetEncoders();
     odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
-  public void resetEncoders()
-  {
-    rightMaster_encoder.setPosition(0);
-    rightSlave1_encoder.setPosition(0);
-    
-    leftMaster_encoder.setPosition(0);
-    leftSlave1_encoder.setPosition(0);
-    
-
-  }
-
+  // Gets the Wheel Speeds of Each Side of the Drivebase
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(getLeftEncoders_Velocity(), getRightEncoders_Velocity());
   }
 
+  // Gets Heading Angle from the Gyro (NavX)
   public double getHeading() {
     return Math.IEEEremainder(navX.getAngle(), 360);
   }
 
+  // Gets Speed at Which the Robot is Turning
   public double getRurnRate()
   {
     return navX.getRate();
   }
 
+  // Zero's the Reading from the NavX
+  public void zeroHeading()
+  {
+    navX.zeroYaw();
+  }
+
+  // Allows For Independent Control of Each Side of the Robot Without Getting Controlled By the Tank Drive Object
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    leftMotors.setVoltage(leftVolts);
+    rightMotors.setVoltage(-rightVolts);
+    drive.feed();
+  }
+
+  /****************************************************
+   *********** LIMELIGHT AUTO-AIM METHODS *************
+   ****************************************************/
+  
+  // Automatically Turns the Robot to Face the Vision Target Using a PID Controller
   public void limelightAim_PID()
   {
     double offset = limelight.getX_Offset();
@@ -180,6 +178,7 @@ public class Drivebase extends SubsystemBase {
     tankDrive(motorOutput, -motorOutput);
   }
 
+  // Automatically Turns the Robot to Face the Vision Target Using a Predefined P Constant and Tolerances
   public void limelightAim_Simple()
   {
     double kP = -0.1;
@@ -198,10 +197,6 @@ public class Drivebase extends SubsystemBase {
     drive.tankDrive(steering_adjust, -steering_adjust);
   }
 
-  public void zeroHeading()
-  {
-    navX.zeroYaw();
-  }
   
   /****************************************************
    ************ DIFFERENTIAL DRIVE MODES **************
@@ -214,12 +209,6 @@ public class Drivebase extends SubsystemBase {
   public void arcadeDrive(double power, double turn, boolean squaredInputs)
   {
     drive.arcadeDrive(power, turn, squaredInputs);
-  }
-
-  public void tankDriveVolts(double leftVolts, double rightVolts) {
-    leftMotors.setVoltage(leftVolts);
-    rightMotors.setVoltage(-rightVolts);
-    drive.feed();
   }
 
   public void tankDrive(double left, double right)
@@ -364,28 +353,55 @@ public class Drivebase extends SubsystemBase {
 
   /****************************************************
    * SETTING POSITION AND VELOCITY CONVERSION FACTORS *
+   ***** ALSO ANY MOTOR SETTING METHODS ARE HERE ******
    ****************************************************/
-  public void setPositionConversionFactor()
+  public void setPositionConversionFactor(double conversionFactor)
   {
-    rightMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    rightSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    rightMaster_encoder.setPositionConversionFactor(conversionFactor);
+    rightSlave1_encoder.setPositionConversionFactor(conversionFactor);
     
 
-    leftMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    leftSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    leftMaster_encoder.setPositionConversionFactor(conversionFactor);
+    leftSlave1_encoder.setPositionConversionFactor(conversionFactor);
     
   }
 
-  public void setVelocityConversionFactor()
+  public void setVelocityConversionFactor(double conversionFactor)
   {
-    rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    rightMaster_encoder.setVelocityConversionFactor(conversionFactor);
+    rightSlave1_encoder.setVelocityConversionFactor(conversionFactor);
     
 
-    rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    
+    rightMaster_encoder.setVelocityConversionFactor(conversionFactor);
+    rightSlave1_encoder.setVelocityConversionFactor(conversionFactor);
   }
+
+  public void setSmartCurrentLimit(int currentLimit)
+  {
+    rightMaster.setSmartCurrentLimit(currentLimit);
+    rightSlave1.setSmartCurrentLimit(currentLimit);
+    leftMaster.setSmartCurrentLimit(currentLimit);
+    leftSlave1.setSmartCurrentLimit(currentLimit);
+  }
+
+  public void saveMotorSettings()
+  {
+    rightMaster.burnFlash();
+    rightSlave1.burnFlash();
+    leftMaster.burnFlash();
+    leftSlave1.burnFlash();
+  }
+
+  public void resetEncoders()
+  {
+    rightMaster_encoder.setPosition(0);
+    rightSlave1_encoder.setPosition(0);
+    
+    leftMaster_encoder.setPosition(0);
+    leftSlave1_encoder.setPosition(0);
+  }
+
+
   
   
 

@@ -39,15 +39,17 @@ public final class Constants {
         public static final double kRamseteB = 2;
         public static final double kRamseteZeta = 0.7;
 
-        public static final double distPerPulse = .0011114506;
-        public static final double velocityConversion = .0007780154;
+        public static final double distPerPulse = .0011114506; // In Meters
+        public static final double velocityConversion = .0007780154; // In Meters
 
-        public static final int positionConversionFactor = 10;  //NEED TO SET FOR REALS
 
         public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
         public static class PID_Values {
 
+            public static final double kP = 0;
+            public static final double kI = 0;
+            public static final double kD = 0;
             public static final double ksVolts = 0.361;
             public static final double kvVoltSecondsPerMeter = 3.73;
             public static final double kaVoltSecondsSquaredPerMeter = 0.55;
