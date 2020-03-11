@@ -7,9 +7,17 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.commands.Arm_Manual;
 import frc.robot.commands.Collecter_Collect;
@@ -100,6 +108,7 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveManual);
     shooterHood.setDefaultCommand(hoodManual);
     collector.setDefaultCommand(collectorStop);
+    arm.setDefaultCommand(armManual);
     hopper.setDefaultCommand(hopperStop);
 
   }
@@ -125,6 +134,8 @@ public class RobotContainer {
     pilot.rt.whileHeld(collectorEject, true);
 
     
+
+    
   }
 
 
@@ -137,12 +148,27 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
 
     var autoVoltageConstraint =
-    new DifferentialDriveVoltageConstraint(
+      new DifferentialDriveVoltageConstraint(
         new SimpleMotorFeedforward(Constants.Drivebase_Constants.PID_Values.ksVolts,
                                    Constants.Drivebase_Constants.PID_Values.kaVoltSecondsSquaredPerMeter,
                                    Constants.Drivebase_Constants.PID_Values.kvVoltSecondsPerMeter),
-        Constants.Drivebase_Constants.kinematics,
-        10);
-    return m_autoCommand;
+                                   Constants.Drivebase_Constants.kinematics, 10);
+
+    TrajectoryConfig config = new TrajectoryConfig(Constants.Drivebase_Constants.kMaxSpeedMetersPerSecond, Constants.Drivebase_Constants.kMaxAccelerationMetersPerSecondSquared)
+    .setKinematics(Constants.Drivebase_Constants.kinematics)
+    .addConstraint(autoVoltageConstraint);
+
+    Trajectory driveForward = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)),  
+    
+    List.of
+    (
+      new Translation2d(.5, 0),
+      new Translation2d(1, 0)
+    ),
+      new Pose2d(2, 0, new Rotation2d(0)), config);
+    
+    
+    
+      return m_autoCommand;
   }
 }

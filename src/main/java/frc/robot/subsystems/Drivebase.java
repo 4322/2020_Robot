@@ -32,19 +32,18 @@ public class Drivebase extends SubsystemBase {
 
   private CANSparkMax rightMaster;
   private CANSparkMax rightSlave1;
-  private CANSparkMax rightSlave2;
-
+  
   private CANSparkMax leftMaster;
   private CANSparkMax leftSlave1;
-  private CANSparkMax leftSlave2;
+  
 
   private CANEncoder rightMaster_encoder;
   private CANEncoder rightSlave1_encoder;
-  private CANEncoder rightSlave2_encoder;
+  
 
   private CANEncoder leftMaster_encoder;
   private CANEncoder leftSlave1_encoder;
-  private CANEncoder leftSlave2_encoder;
+  
 
   private AHRS navX;
 
@@ -74,57 +73,55 @@ public class Drivebase extends SubsystemBase {
   
     rightMaster = new CANSparkMax(Constants.Drivebase_Constants.rightMasterSpark_ID, MotorType.kBrushless);
     rightSlave1 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave1Spark_ID, MotorType.kBrushless);
-    rightSlave2 = new CANSparkMax(Constants.Drivebase_Constants.rightSlave2Spark_ID, MotorType.kBrushless);
+    
 
     leftMaster = new CANSparkMax(Constants.Drivebase_Constants.leftMasterSpark_ID, MotorType.kBrushless);
     leftSlave1 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave1Spark_ID, MotorType.kBrushless);
-    leftSlave2 = new CANSparkMax(Constants.Drivebase_Constants.leftSlave2Spark_ID, MotorType.kBrushless);
-
+    
     rightMaster_encoder = rightMaster.getEncoder();
     rightSlave1_encoder = rightSlave1.getEncoder();
-    rightSlave2_encoder = rightSlave2.getEncoder();
+    
 
     leftMaster_encoder = leftMaster.getEncoder();
     leftSlave1_encoder = leftSlave1.getEncoder();
-    leftSlave2_encoder = leftSlave2.getEncoder();
+    
 
    
     leftMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
     leftSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
-    leftSlave2_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    
 
     rightMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
     rightSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
-    rightSlave2_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.distPerPulse);
+    
 
     leftMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
     leftSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
-    leftSlave2_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
     
     rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
     rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
-    leftSlave2_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.velocityConversion);
+    
 
     resetEncoders();
 
     rightMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
     rightSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    rightSlave2.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
+    
 
     leftMaster.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
     leftSlave1.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
-    leftSlave2.setSmartCurrentLimit(Constants.Drivebase_Constants.SparkMax_CurrentLimit);
+    
 
     rightMaster.burnFlash();
     rightSlave1.burnFlash();
-    rightSlave2.burnFlash();
+    
 
     leftMaster.burnFlash();
     leftSlave1.burnFlash();
-    leftSlave2.burnFlash();
+    
 
-    rightMotors = new SpeedControllerGroup(rightMaster, rightSlave1, rightSlave2);
-    leftMotors = new SpeedControllerGroup(leftMaster, leftSlave1, leftSlave2);
+    rightMotors = new SpeedControllerGroup(rightMaster, rightSlave1);
+    leftMotors = new SpeedControllerGroup(leftMaster, leftSlave1);
 
     drive = new DifferentialDrive(leftMotors, rightMotors);
 
@@ -153,11 +150,10 @@ public class Drivebase extends SubsystemBase {
   {
     rightMaster_encoder.setPosition(0);
     rightSlave1_encoder.setPosition(0);
-    rightSlave2_encoder.setPosition(0);
     
     leftMaster_encoder.setPosition(0);
     leftSlave1_encoder.setPosition(0);
-    leftSlave2_encoder.setPosition(0);
+    
 
   }
 
@@ -238,22 +234,22 @@ public class Drivebase extends SubsystemBase {
    ****************************************************/
   public double getRightEncoders_Position()
   {
-    return ((leftMaster_encoder.getPosition() + leftSlave1_encoder.getPosition() + leftSlave2_encoder.getPosition())/3);
+    return ((leftMaster_encoder.getPosition() + leftSlave1_encoder.getPosition())/2);
   }
 
   public double getLeftEncoders_Position()
   {
-    return ((rightMaster_encoder.getPosition() + rightSlave1_encoder.getPosition() + rightSlave2_encoder.getPosition())/3);
+    return ((rightMaster_encoder.getPosition() + rightSlave1_encoder.getPosition())/2);
   }
 
   public double getRightEncoders_Velocity()
   {
-    return ((rightMaster_encoder.getVelocity() + rightSlave1_encoder.getVelocity() + rightSlave2_encoder.getVelocity())/3);
+    return ((rightMaster_encoder.getVelocity() + rightSlave1_encoder.getVelocity())/2);
   }
 
   public double getLeftEncoders_Velocity()
   {
-    return ((leftMaster_encoder.getVelocity() + rightSlave1_encoder.getVelocity() + rightSlave2_encoder.getVelocity())/3);
+    return ((leftMaster_encoder.getVelocity() + rightSlave1_encoder.getVelocity())/2);
   }
 
   /****************************************************
@@ -270,10 +266,7 @@ public class Drivebase extends SubsystemBase {
       return rightSlave1_encoder.getPosition();
    }
 
-   public double getRightSlave2EncoderPosition()
-   {
-      return rightSlave2_encoder.getPosition();
-   }
+   
 
    public double getLeftMasterEncoderPosition()
    {
@@ -285,10 +278,7 @@ public class Drivebase extends SubsystemBase {
       return leftSlave1_encoder.getPosition();
    }
 
-   public double getLeftSlave2EncoderPosition()
-   {
-      return leftSlave2_encoder.getPosition();
-   }
+
 
   /****************************************************
    ********* GETTING SINGLE ENCODER VALUES ************
@@ -304,11 +294,7 @@ public class Drivebase extends SubsystemBase {
       return rightSlave1_encoder.getVelocity();
    }
    
-   public double getRightSlave2EncoderVelocity()
-   {
-      return rightSlave2_encoder.getVelocity();
-   }
-
+  
    public double getLeftMasterEncoderVelocity()
    {
       return rightMaster_encoder.getVelocity();
@@ -354,19 +340,19 @@ public class Drivebase extends SubsystemBase {
    *****************************************************/
   public void displayAllLeftSideEncoders_Position()
   {
-    double[] leftEncoders = new double[]{getLeftMasterEncoderPosition(), getLeftSlave1EncoderPosition(), getLeftSlave2EncoderPosition()};
+    double[] leftEncoders = new double[]{getLeftMasterEncoderPosition(), getLeftSlave1EncoderPosition()};
     SmartDashboard.putNumberArray("Left Encoder Position (Master, Slave1, Slave2)", leftEncoders);
   }
 
   public void displayAllRightSideEncoders_Position()
   {
-    double[] rightEncoders = new double[]{getRightMasterEncoderPosition(), getRightSlave1EncoderPosition(), getRightSlave2EncoderPosition()};
+    double[] rightEncoders = new double[]{getRightMasterEncoderPosition(), getRightSlave1EncoderPosition()};
     SmartDashboard.putNumberArray("Right Encoder Position (Master, Slave1, Slave2)", rightEncoders);
   }
 
   public void displayAllRightSideEncoders_Velocity()
   {
-    double[] rightEncoders = new double[]{getRightMasterEncoderVelocity(), getRightSlave1EncoderVelocity(), getRightSlave2EncoderVelocity()};
+    double[] rightEncoders = new double[]{getRightMasterEncoderVelocity(), getRightSlave1EncoderVelocity()};
     SmartDashboard.putNumberArray("Right Encoder Velocity (Master, Slave1, Slave2)", rightEncoders);
   }
 
@@ -383,22 +369,22 @@ public class Drivebase extends SubsystemBase {
   {
     rightMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
     rightSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    rightSlave2_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    
 
     leftMaster_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
     leftSlave1_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    leftSlave2_encoder.setPositionConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    
   }
 
   public void setVelocityConversionFactor()
   {
     rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
     rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    rightSlave2_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    
 
     rightMaster_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
     rightSlave1_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
-    rightSlave2_encoder.setVelocityConversionFactor(Constants.Drivebase_Constants.positionConversionFactor);
+    
   }
   
   

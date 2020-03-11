@@ -22,12 +22,12 @@ public final class Constants {
     public static class Drivebase_Constants {
 
         public static final int rightMasterSpark_ID = 1;
-        public static final int rightSlave1Spark_ID = 2;
-        public static final int rightSlave2Spark_ID = 3;
+        public static final int rightSlave1Spark_ID = 3;
+      
         
         public static final int leftMasterSpark_ID = 9;
-        public static final int leftSlave1Spark_ID = 10;
-        public static final int leftSlave2Spark_ID = 11;
+        public static final int leftSlave1Spark_ID = 11;
+        
 
         public static final int SparkMax_CurrentLimit = 60;
 
@@ -60,16 +60,16 @@ public final class Constants {
 
     public static class ArmConstants
     {
-        public static final int leftMotor_ID = 1;
-        public static final int rightMotor_ID = 2;
-        public static final int collectorTalonID = 7;
+        public static final int leftMotor_ID = 7;
+        public static final int rightMotor_ID = 6;
+        public static final int collectorTalonID = 15;
 
         public static final double collectSetpoint = 0;
         public static final double startingConfigSetpoint = 0;
         public static final double climbSetpoint = 0;
 
         public static class PID_Values {
-            public static final double kP = 0;
+            public static final double kP = 1;
             public static final double kI = 0;
             public static final double kD = 0;
             public static final double kIz = 0;
@@ -124,8 +124,8 @@ public final class Constants {
     }
     public static class Hopper_Constants
     {
-    public static final int HopperMotorslaveID = 0; //CHANGE
-    public static final int HopperMotormasterID = 0; //change
+    public static final int HopperMotorslaveID = 14; //CHANGE
+    public static final int HopperMotormasterID = 13; //change
 
     }
     public static class Limelight_Constants

@@ -55,4 +55,9 @@ public class Shooter_Hood extends SubsystemBase {
   {
     double error = getPosition() - generateSetpoint();
   }
+
+  public void setHood(double power)
+  {
+    shooterHood.set(power);
+  }
 }
